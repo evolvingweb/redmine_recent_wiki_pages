@@ -1,0 +1,40 @@
+<%
+#see WikiController::load_pages_for_index
+pages = WikiPage.with_updated_on.find :all, :order => "updated_on DESC", :limit => 10,:include => {:wiki => :project}
+%>
+
+<span style="display:inline-block"> <h3>Top 10 Most Recent Wiki Pages</h3></span>
+<span style="display:inline-block"> <%=link_to("more", {:controller => 'recent_wiki_pages', :action => 'date_index' }) %></span>
+
+<table class="list issues">
+  <thead>
+    <tr>
+      <th>Page</th><th>Project</th><th>Updated On</th><th>Author</th>
+    </tr>
+  </thead>
+  <% i=0 %>
+<% pages[0,10].each do |page| %>
+  <%
+    if i % 2 == 0
+      trclass = "even"
+    else
+      trclass = "odd"
+    end
+  %>
+  <tr class="<%=trclass%>">
+    <td>
+    <%=link_to(h(page.pretty_title), {:controller => 'wiki', :action => 'show', :project_id => page.project, :id=> page.title}) %>
+    </td>
+    <td>
+    <%=link_to(h(page.project), {:controller => 'wiki', :action => 'date_index', :project_id => page.project }) %>
+    </td>
+    <td>
+      <%= page.content.updated_on.strftime("%I:%M%p  %Y-%m-%d") %>
+    </td>
+    <td>
+      <%= page.content.author %>
+    </td>
+  </tr>
+  <% i += 1 %>
+<% end %>
+</table>
