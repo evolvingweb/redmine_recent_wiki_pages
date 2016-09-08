@@ -1,6 +1,8 @@
 <%
 #see WikiController::load_pages_for_index
-pages = WikiPage.with_updated_on.find :all, :order => "updated_on DESC", :limit => 10,:include => {:wiki => :project}
+pages = RecentWikiPagesController.pages_with_updated_on
+  .limit(10)
+  .includes(:wiki => :project)
 %>
 
 <span style="display:inline-block"> <h3>Top 10 Most Recent Wiki Pages</h3></span>
